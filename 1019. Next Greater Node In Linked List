@@ -1,0 +1,55 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public int[] nextLargerNodes(ListNode head) {
+        	// Keeps track of indices of values in nums
+    Stack<Integer> stack = new Stack<>();
+	
+	// Store node values as we go, 
+	// updates to output value ("next greatest") within while loop as we see them
+    List<Integer> nums = new ArrayList<>();
+    
+    ListNode n = head;
+	
+	// For generating the corresponding index in nums as we step through LinkedList
+    int index = 0;
+    
+    while (n != null) {
+      
+      nums.add(n.val);
+      
+	  // Process anything that is less than current node value
+	  // i.e. current node value is the "next"greatest for elements (index-referenced) in the stack
+      while (!stack.isEmpty() && nums.get(stack.peek()) < n.val) {
+        nums.set(stack.pop(), n.val);
+      }
+      
+	  // Set up for next iteration. 
+	  // Note: Every node gets into the stack.
+      stack.push(index);
+      n = n.next;
+      index++;
+    }
+    
+    // Handle remaining items in stack / write in 0 (no "next greatest" found for these)
+    while (!stack.isEmpty()) {
+      nums.set(stack.pop(), 0);
+    }
+    
+    // Format output
+    int[] result = new int[nums.size()];
+    for (int i = 0; i < result.length; i++) {
+      result[i] = nums.get(i);
+    }
+    
+    return result;
+  }
+    }
